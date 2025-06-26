@@ -1,16 +1,19 @@
-# expense
+# 💰 Money Management App - Flutter
 
-A new Flutter project.
+A mobile application built entirely with Flutter to empower users in taking control of their personal finances. This app provides intuitive tools to track income and expenses, gain insights into spending habits, fostering better financial well-being.
 
-## Getting Started
+## 📱 Features
 
-This project is a starting point for a Flutter application.
+📊 Income & Expense Tracking – Easily log all your financial transactions, categorizing them for better organization.
 
-A few resources to get you started if this is your first Flutter project:
+📈 Financial Insights & Reports – Visualize your spending patterns with interactive charts and generate reports to understand your financial health.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+🔒 Secure Data Storage – All your financial data is securely stored on your device.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+🔎 Transaction Search & Filtering – Quickly find specific transactions using powerful filtering options.
+
+## 🛠️ Tech Stack
+
+💙 Flutter – Frontend mobile development (including UI, state management, and local data persistence).
+
+🗃️ Local Storage – For storing all user financial data (e.g., using shared_preferences for simple key-value pairs).
