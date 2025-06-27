@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AddTransactionPage extends StatefulWidget {
   final Function(double, String, DateTime, bool) onAddTransaction;
 
-  AddTransactionPage({required this.onAddTransaction});
+  const AddTransactionPage({super.key, required this.onAddTransaction});
 
   @override
   _AddTransactionPageState createState() => _AddTransactionPageState();
@@ -48,7 +48,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       Navigator.of(context).pop();
     } else if (!_isDateValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter a valid date'),
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -72,14 +72,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             {'label': 'Salary', 'icon': Icons.attach_money},
             {'label': 'Freelance', 'icon': Icons.work},
             {'label': 'Investments', 'icon': Icons.trending_up},
-            {'label': 'Others', 'icon': Icons.more_horiz},
+            {'label': 'Other', 'icon': Icons.more_horiz},
           ];
 
     final selectedCategory = await showModalBottomSheet<String>(
       context: context,
       builder: (context) {
         return ListView(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           children: categories
               .map((category) => ListTile(
                     leading: Icon(category['icon']),
@@ -113,7 +113,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Enter Transaction Details',
                 style: TextStyle(
                   fontSize: 24,
@@ -121,55 +121,55 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   color: Colors.teal, // Match the color of HomePage
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextField(
                 controller: _amountController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Amount',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.attach_money, color: Colors.teal),
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               GestureDetector(
                 onTap: () => _selectCategory(context),
                 child: InputDecorator(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Category',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.category, color: Colors.teal),
                   ),
                   child: Text(
                     _selectedCategory,
-                    style: TextStyle(fontSize: 16, color: Colors.teal),
+                    style: const TextStyle(fontSize: 16, color: Colors.teal),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextField(
                 controller: _dateController,
                 decoration: InputDecoration(
                   labelText: 'Date (yyyy-mm-dd)',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   hintText: 'Enter date or pick a date',
-                  prefixIcon: Icon(Icons.calendar_today, color: Colors.teal),
+                  prefixIcon: const Icon(Icons.calendar_today, color: Colors.teal),
                   errorText: !_isDateValid ? 'Please enter a valid date' : null,
                 ),
                 onTap: _pickDate,
                 readOnly: true,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Transaction Type:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
                   ),
                   Row(
                     children: [
-                      Text('Expense', style: TextStyle(color: Colors.teal)),
+                      const Text('Expense', style: TextStyle(color: Colors.teal)),
                       Switch(
                         value: !_isExpense,
                         onChanged: (value) {
@@ -178,24 +178,24 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           });
                         },
                       ),
-                      Text('Income', style: TextStyle(color: Colors.teal)),
+                      const Text('Income', style: TextStyle(color: Colors.teal)),
                     ],
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    iconColor: Colors.teal, // Match the color of HomePage
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                   // iconColor: Colors.teal, // Match the color of HomePage
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text('Submit', style: TextStyle(fontSize: 18, color: Colors.teal)),
+                  child: const Text('Submit', style: TextStyle(fontSize: 18, color: Colors.teal)),
                 ),
               ),
             ],
