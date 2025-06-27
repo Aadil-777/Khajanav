@@ -5,7 +5,7 @@ class TransactionHistoryPage extends StatelessWidget {
   final Function(int) onDeleteTransaction;
   final VoidCallback onClearTransactions;
 
-  TransactionHistoryPage({
+  const TransactionHistoryPage({super.key, 
     required this.transactions,
     required this.onDeleteTransaction,
     required this.onClearTransactions,
@@ -15,12 +15,12 @@ class TransactionHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Transaction History',
           style: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
-            letterSpacing: 3.0,
+            
           ),
         ),
         backgroundColor: Colors.teal, // Match CategoriesPage theme
@@ -28,22 +28,22 @@ class TransactionHistoryPage extends StatelessWidget {
         toolbarHeight: 60.0, // Match CategoriesPage AppBar height
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_sweep),
+            icon: const Icon(Icons.delete_sweep),
             onPressed: () async {
               // Show confirmation dialog before clearing all transactions
               bool? confirm = await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('Clear Transactions'),
-                  content: Text('Are you sure you want to clear all transactions?'),
+                  title: const Text('Clear Transactions'),
+                  content: const Text('Are you sure you want to clear all transactions?'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Yes', style: TextStyle(color: Colors.teal)),
+                      child: const Text('Yes', style: TextStyle(color: Colors.teal)),
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('No', style: TextStyle(color: Colors.teal)),
+                      child: const Text('No', style: TextStyle(color: Colors.teal)),
                     ),
                   ],
                 ),
@@ -67,7 +67,7 @@ class TransactionHistoryPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.history, size: 100, color: Colors.grey[300]),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(
                       'No transactions available.',
                       style: TextStyle(fontSize: 18, color: Colors.grey[600]),
@@ -95,7 +95,7 @@ class TransactionHistoryPage extends StatelessWidget {
                           color: Colors.black.withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 6,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -110,14 +110,14 @@ class TransactionHistoryPage extends StatelessWidget {
                       ),
                       title: Text(
                         description,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: Colors.white,
                         ),
                       ),
                       subtitle: Text(
-                        '${date.toLocal().toString().substring(0, 10)}',
+                        date.toLocal().toString().substring(0, 10),
                         style: TextStyle(color: Colors.grey[400]),
                       ),
                       trailing: Row(
@@ -132,31 +132,31 @@ class TransactionHistoryPage extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.redAccent),
+                            icon: const Icon(Icons.delete, color: Colors.redAccent),
                             onPressed: () {
                               // Show a confirmation dialog
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text('Delete Transaction'),
-                                  content: Text('Are you sure you want to delete this transaction?'),
+                                  title: const Text('Delete Transaction'),
+                                  content: const Text('Are you sure you want to delete this transaction?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.of(context).pop(),
-                                      child: Text('Cancel'),
+                                      child: const Text('Cancel'),
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         onDeleteTransaction(index); // Invoke the callback to delete the transaction
                                         Navigator.of(context).pop(); // Close the dialog
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
+                                          const SnackBar(
                                             content: Text('Transaction deleted'),
                                             backgroundColor: Colors.green,
                                           ),
                                         );
                                       },
-                                      child: Text('Delete', style: TextStyle(color: Colors.redAccent)),
+                                      child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
                                     ),
                                   ],
                                 ),
