@@ -7,7 +7,7 @@ class ExpenseChartPage extends StatefulWidget {
   final Map<String, double> expenseData;
   final Map<String, double> incomeData;
 
-  ExpenseChartPage({required this.expenseData, required this.incomeData});
+  const ExpenseChartPage({super.key, required this.expenseData, required this.incomeData});
 
   @override
   _ExpenseChartPageState createState() => _ExpenseChartPageState();
@@ -47,78 +47,77 @@ class _ExpenseChartPageState extends State<ExpenseChartPage> {
 
     return Scaffold(
       appBar: AppBar(
-        
         backgroundColor: Colors.teal,
         automaticallyImplyLeading: false, // Remove the back button
         toolbarHeight: 60.0, // Reduced the height of the AppBar
       ),
       body: Container(
         color: Colors.black,
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildChartContainer(
-                  title: 'Expenses',
-                  hasData: hasExpenseData,
-                  chart: PieChart(
-                    dataMap: widget.expenseData,
-                    chartType: ChartType.ring,
-                    colorList: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.white, Colors.blue],
-                    legendOptions: LegendOptions(
-                      showLegends: true,
-                      legendPosition: LegendPosition.right,
-                      legendTextStyle: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: _buildChartContainer(
+                title: 'Expenses',
+                hasData: hasExpenseData,
+                chart: PieChart(
+                  dataMap: widget.expenseData,
+                  chartType: ChartType.ring,
+                  colorList: const [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.white, Colors.blue],
+                  legendOptions: const LegendOptions(
+                    showLegends: true,
+                    legendPosition: LegendPosition.right,
+                    legendTextStyle: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
                     ),
-                    chartValuesOptions: ChartValuesOptions(
-                      showChartValues: false, // Hide chart values
-                    ),
-                    ringStrokeWidth: 40,
-                    emptyColor: Colors.grey[300]!,
-                    animationDuration: Duration(milliseconds: 1000),
-                    baseChartColor: Colors.transparent,
-                    centerText: null, // Remove the center text
                   ),
-                ),
-                SizedBox(height: 20.0),
-                _buildChartContainer(
-                  title: 'Income',
-                  hasData: hasIncomeData,
-                  chart: PieChart(
-                    dataMap: widget.incomeData,
-                    chartType: ChartType.ring,
-                    colorList: [Colors.green, Colors.lightGreen, Colors.blueAccent, Colors.purple, Colors.pink, Colors.teal],
-                    legendOptions: LegendOptions(
-                      showLegends: true,
-                      legendPosition: LegendPosition.right,
-                      legendTextStyle: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    chartValuesOptions: ChartValuesOptions(
-                      showChartValues: false, // Hide chart values
-                    ),
-                    ringStrokeWidth: 40,
-                    emptyColor: Colors.grey[300]!,
-                    animationDuration: Duration(milliseconds: 1000),
-                    baseChartColor: Colors.transparent,
-                    centerText: null, // Remove the center text
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValues: false, // Hide chart values
                   ),
+                  ringStrokeWidth: 40,
+                  emptyColor: Colors.grey[300]!,
+                  animationDuration: const Duration(milliseconds: 1000),
+                  baseChartColor: Colors.transparent,
+                  centerText: null, // Remove the center text
                 ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(height: 20.0),
+            Expanded(
+              child: _buildChartContainer(
+                title: 'Income',
+                hasData: hasIncomeData,
+                chart: PieChart(
+                  dataMap: widget.incomeData,
+                  chartType: ChartType.ring,
+                  colorList: const [Colors.green, Colors.lightGreen, Colors.blueAccent, Colors.purple, Colors.pink, Colors.teal],
+                  legendOptions: const LegendOptions(
+                    showLegends: true,
+                    legendPosition: LegendPosition.right,
+                    legendTextStyle: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValues: false, // Hide chart values
+                  ),
+                  ringStrokeWidth: 40,
+                  emptyColor: Colors.grey[300]!,
+                  animationDuration: const Duration(milliseconds: 1000),
+                  baseChartColor: Colors.transparent,
+                  centerText: null, // Remove the center text
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -145,9 +144,9 @@ class _ExpenseChartPageState extends State<ExpenseChartPage> {
     required PieChart chart,
   }) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [Colors.teal, Colors.tealAccent], // Matching gradient with LoginPage
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -158,7 +157,7 @@ class _ExpenseChartPageState extends State<ExpenseChartPage> {
             color: Colors.black.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -167,28 +166,29 @@ class _ExpenseChartPageState extends State<ExpenseChartPage> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24.0, // Font size for headings
               fontWeight: FontWeight.bold, // Set font to bold
               letterSpacing: 3.0, // Added letter spacing
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 16.0),
-          hasData
-              ? SizedBox(
-                  height: 200,
-                  child: chart,
-                )
-              : Center(
-                  child: Text(
-                    'No data to display',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.white70,
+          const SizedBox(height: 16.0),
+          Expanded(
+            child: hasData
+                ? SizedBox.expand(
+                    child: chart,
+                  )
+                : const Center(
+                    child: Text(
+                      'No data to display',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.white70,
+                      ),
                     ),
                   ),
-                ),
+          ),
         ],
       ),
     );
