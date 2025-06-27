@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart'; // Import the intl package for date formatting
+import 'package:intl/intl.dart';
 import 'login.dart';
 import 'categories.dart';
 import 'addentrypage.dart';
 import 'transactionhistorypage.dart';
-import 'expensechartpage.dart';
-import 'categorysummarypage.dart'; // Import the new CategorySummaryPage
+import 'expensechartpage.dart'; // Import the new ExpenseChartPage
+import 'profile.dart'; // Import the ProfilePage
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -19,7 +21,9 @@ class _HomePageState extends State<HomePage> {
   double _totalIncome = 0.0;
   double _totalExpense = 0.0;
   List<Map<String, dynamic>> _transactions = [];
-  String _username = 'User';
+  String _username = '';
+  String _email = '';
+  String _dateOfBirth = '';
 
   int _selectedIndex = 0;
 
@@ -27,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadTransactions();
-    _loadUsername();
+    _loadProfileData(); // Load profile data instead of just the username
   }
 
   Future<void> _loadTransactions() async {
@@ -50,12 +54,25 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadUsername() async {
+  Future<void> _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedUsername = prefs.getString('username');
+    String? storedEmail = prefs.getString('email');
+    String? storedDateOfBirth = prefs.getString('dateOfBirth');
+    
     if (storedUsername != null) {
       setState(() {
         _username = storedUsername;
+      });
+    }
+    if (storedEmail != null) {
+      setState(() {
+        _email = storedEmail;
+      });
+    }
+    if (storedDateOfBirth != null) {
+      setState(() {
+        _dateOfBirth = storedDateOfBirth;
       });
     }
   }
@@ -165,11 +182,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategorySummaryPage(
-              expenseSummary: _getExpensePieChartData(),
-              incomeSummary: _getIncomePieChartData(),
-              transactions: _transactions, // Pass transactions list
-            ),
+            builder: (context) => CategoriesPage(),
           ),
         );
         break;
@@ -182,15 +195,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 0.0,
-        
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.black, // Set drawer background color to black
+          color: Colors.black,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              DrawerHeader(
+              const DrawerHeader(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.teal, Colors.tealAccent],
@@ -216,8 +228,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 16.0),
                     Text(
-                      'Welcome, $_username',
+                      'MENU',
                       style: TextStyle(
+                        letterSpacing: 3,
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -227,15 +240,31 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.home, color: Colors.teal),
-                title: Text('Home', style: TextStyle(fontSize: 18, color: Colors.white)),
+                leading: const Icon(Icons.person, color: Colors.teal),
+                title: const Text('Profile', style: TextStyle(fontSize: 18, color: Colors.white)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        username: _username,
+                        email: _email,
+                        dateOfBirth: _dateOfBirth,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.home, color: Colors.teal),
+                title: const Text('Home', style: TextStyle(fontSize: 18, color: Colors.white)),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.history, color: Colors.teal),
-                title: Text('Transaction History', style: TextStyle(fontSize: 18, color: Colors.white)),
+                leading: const Icon(Icons.history, color: Colors.teal),
+                title: const Text('Transaction History', style: TextStyle(fontSize: 18, color: Colors.white)),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -250,12 +279,12 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.settings, color: Colors.teal),
-                title: Text('Settings', style: TextStyle(fontSize: 18, color: Colors.white)),
+                leading: const Icon(Icons.settings, color: Colors.teal),
+                title: const Text('Settings', style: TextStyle(fontSize: 18, color: Colors.white)),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Settings is currently unavailable.'),
                       duration: Duration(seconds: 2),
                     ),
@@ -263,8 +292,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.logout, color: Colors.redAccent),
-                title: Text('Logout', style: TextStyle(fontSize: 18, color: Colors.white)),
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text('Logout', style: TextStyle(fontSize: 18, color: Colors.white)),
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
@@ -277,15 +306,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Container(
-        color: Colors.black, // Ensure the background color is black
+        color: Colors.black,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(14.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 40.0,
                     backgroundColor: Colors.white,
                     child: Icon(
@@ -294,37 +323,37 @@ class _HomePageState extends State<HomePage> {
                       size: 40.0,
                     ),
                   ),
-                  SizedBox(width: 16.0),
+                  const SizedBox(width: 16.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome, $_username',
-                        style: TextStyle(
+                        'Welcome $_username',
+                        style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          letterSpacing: 3.0,
+                          
                         ),
                       ),
-                      SizedBox(height: 4.0),
-                      Text(
+                      const SizedBox(height: 4.0),
+                      const Text(
                         'Your current balance:',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Colors.white70,
-                          letterSpacing: 3.0,
+                          
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               Container(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [Colors.teal, Colors.tealAccent],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -334,14 +363,14 @@ class _HomePageState extends State<HomePage> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.5),
                       blurRadius: 10.0,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Total Balance',
                       style: TextStyle(
                         fontSize: 24.0,
@@ -350,27 +379,27 @@ class _HomePageState extends State<HomePage> {
                         letterSpacing: 3.0,
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Text(
                       '\$${_totalBalance.toStringAsFixed(2)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 32.0,
                         color: Colors.white,
                         letterSpacing: 3.0,
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Text(
                       'Total Income: \$${_totalIncome.toStringAsFixed(2)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.white70,
                       ),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Text(
                       'Total Expense: \$${_totalExpense.toStringAsFixed(2)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.white70,
                       ),
@@ -378,10 +407,10 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: Colors.blueGrey[800],
                     borderRadius: BorderRadius.circular(12.0),
@@ -389,14 +418,14 @@ class _HomePageState extends State<HomePage> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.5),
                         blurRadius: 10.0,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Today\'s Transactions',
                         style: TextStyle(
                           fontSize: 24.0,
@@ -405,29 +434,38 @@ class _HomePageState extends State<HomePage> {
                           letterSpacing: 3.0,
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Expanded(
                         child: ListView(
                           children: _getTodaysTransactions().map((transaction) {
-                            return ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                transaction['description'],
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8.0),
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey[900],
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                              subtitle: Text(
-                                '${transaction['isExpense'] ? '-' : '+'}\$${transaction['amount'].toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  color: transaction['isExpense'] ? Colors.red : Colors.green,
-                                ),
-                              ),
-                              trailing: Text(
-                                DateFormat('hh:mm a').format(DateTime.parse(transaction['date'])),
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      transaction['description'],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16.0),
+                                  Text(
+                                    '${transaction['isExpense'] ? '-' : '+'}\$${transaction['amount'].toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      color: transaction['isExpense'] ? Colors.red : Colors.green,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           }).toList(),
@@ -437,7 +475,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 24.0),
+              const SizedBox(height: 24.0),
             ],
           ),
         ),
@@ -453,13 +491,13 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.teal,
+        child: Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
