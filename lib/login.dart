@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
-import 'signup.dart'; // Import the sign-up page
-import 'home.dart';  // Import the home page
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'signup.dart'; // Import SignUpPage
+import 'home.dart';  // Import HomePage
 
 class LoginPage extends StatefulWidget {
-  final String? registeredEmail;
-  final String? registeredPassword;
-
-  LoginPage({this.registeredEmail, this.registeredPassword});
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -18,14 +16,18 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      if (email == widget.registeredEmail && password == widget.registeredPassword) {
+      final prefs = await SharedPreferences.getInstance();
+      final savedEmail = prefs.getString('email');
+      final savedPassword = prefs.getString('password');
+
+      if (email == savedEmail && password == savedPassword) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Logged in successfully!'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -33,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
 
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -41,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Invalid email or password'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -53,13 +55,20 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: Colors.black,
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -74,22 +83,22 @@ class _LoginPageState extends State<LoginPage> {
                       Shadow(
                         blurRadius: 10.0,
                         color: Colors.tealAccent.withOpacity(0.6),
-                        offset: Offset(2.0, 2.0),
+                        offset: const Offset(2.0, 2.0),
                       ),
                       Shadow(
                         blurRadius: 10.0,
                         color: Colors.black.withOpacity(0.7),
-                        offset: Offset(-2.0, -2.0),
+                        offset: const Offset(-2.0, -2.0),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Image.asset(
                   'assets/logoo.jpg',
                   height: 180.0,
                 ),
-                SizedBox(height: 40.0),
+                const SizedBox(height: 40.0),
                 Card(
                   elevation: 8.0,
                   shape: RoundedRectangleBorder(
@@ -97,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: [Colors.teal, Colors.tealAccent],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -110,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
+                          const Text(
                             'Login',
                             style: TextStyle(
                               fontSize: 24.0,
@@ -119,21 +128,21 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
-                              labelStyle: TextStyle(color: Colors.grey),
+                              labelStyle: const TextStyle(color: Colors.grey),
                               fillColor: Colors.black,
                               filled: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                                 borderSide: BorderSide.none,
                               ),
-                              prefixIcon: Icon(Icons.email, color: Colors.white),
+                              prefixIcon: const Icon(Icons.email, color: Colors.white),
                             ),
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
@@ -141,21 +150,21 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
                               labelText: 'Password',
-                              labelStyle: TextStyle(color: Colors.grey),
+                              labelStyle: const TextStyle(color: Colors.grey),
                               fillColor: Colors.black,
                               filled: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                                 borderSide: BorderSide.none,
                               ),
-                              prefixIcon: Icon(Icons.lock, color: Colors.white),
+                              prefixIcon: const Icon(Icons.lock, color: Colors.white),
                             ),
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -164,39 +173,36 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 24.0),
+                          const SizedBox(height: 24.0),
                           ElevatedButton(
                             onPressed: _login,
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
-                              iconColor: Colors.teal,
-                              disabledIconColor: Colors.white,
+                              iconColor: Colors.teal, // Background color
+                              disabledIconColor: Colors.white, // Text color
                             ),
-                            child: Text('Login'),
+                            child: const Text('Login'),
                           ),
-                          SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
                           TextButton(
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUpPage(onSignUp: (email, password) {
-                                  // You can store these credentials securely in a real application
+                                MaterialPageRoute(builder: (context) => SignUpPage(onSignUp: (email, password, username, dateOfBirth) {
+                                  // When navigating to SignUpPage, use the onSignUp callback to pass data to LoginPage
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginPage(
-                                        registeredEmail: email,
-                                        registeredPassword: password,
-                                      ),
+                                      builder: (context) => LoginPage(),
                                     ),
                                   );
                                 })),
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               'Don\'t have an account? Sign Up',
                               style: TextStyle(
                                 color: Colors.blueGrey,
