@@ -7,6 +7,8 @@ import 'expensechartpage.dart';
 import 'transactiondetailspage.dart'; // Import the new TransactionDetailsPage
 
 class CategoriesPage extends StatefulWidget {
+  const CategoriesPage({super.key});
+
   @override
   _CategoriesPageState createState() => _CategoriesPageState();
 }
@@ -97,7 +99,6 @@ class _CategoriesPageState extends State<CategoriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         backgroundColor: Colors.teal,
         automaticallyImplyLeading: false, // Remove the back button
         toolbarHeight: 60.0, // Reduced the height of the AppBar
@@ -105,20 +106,19 @@ class _CategoriesPageState extends State<CategoriesPage> {
       body: Container(
         color: Colors.black,
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView( // Ensure the page is scrollable
-          child: Column(
-            children: [
-              _buildSection('Expenses', _expenseTotals, isExpense: true),
-              SizedBox(height: 20),
-              _buildSection('Income', _incomeTotals, isExpense: false),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch, // Stretch children horizontally
+          children: [
+            _buildSection('Expenses', _expenseTotals, isExpense: true),
+            const SizedBox(height: 20),
+            _buildSection('Income', _incomeTotals, isExpense: false),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -140,68 +140,88 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 
   Widget _buildSection(String title, Map<String, double> totals, {required bool isExpense}) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.teal, Colors.tealAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: Offset(0, 4),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.teal, Colors.tealAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 3.0,
-              color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-          ),
-          SizedBox(height: 16.0),
-          ...totals.entries.map((entry) {
-            return Card(
-              elevation: 4.0,
-              margin: EdgeInsets.symmetric(vertical: 8.0),
-              color: Colors.grey[850],
-              child: ListTile(
-                leading: Icon(_getCategoryIcon(entry.key), color: Colors.teal),
-                title: Text(entry.key, style: TextStyle(color: Colors.white)),
-                trailing: Text(
-                  '\$${entry.value.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: isExpense ? Colors.red : Colors.green, // Set color based on category type
-                  ),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                onTap: () {
-                  List<Map<String, dynamic>> transactions = _transactionsByCategory[entry.key] ?? [];
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TransactionDetailsPage(
-                        category: entry.key,
-                        transactions: transactions,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              title,
+              
+              style: const TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 3.0,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            totals.isEmpty // Check if the totals map is empty
+                ? const Center(
+                    child: Text(
+                      
+                      'No data to display',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        
+                        fontSize: 18.0,
+                        color: Colors.white70,
                       ),
                     ),
-                  );
-                },
-              ),
-            );
-          }).toList(),
-        ],
+                  )
+                : Expanded(
+                    child: ListView(
+                      children: totals.entries.map((entry) {
+                        return Card(
+                          elevation: 4.0,
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          color: Colors.grey[850],
+                          child: ListTile(
+                            leading: Icon(_getCategoryIcon(entry.key), color: Colors.teal),
+                            title: Text(entry.key, style: const TextStyle(color: Colors.white)),
+                            trailing: Text(
+                              '${isExpense ? '-' : '+'}\$${entry.value.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: isExpense ? Colors.red : Colors.green, // Set color based on category type
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            onTap: () {
+                              List<Map<String, dynamic>> transactions = _transactionsByCategory[entry.key] ?? [];
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TransactionDetailsPage(
+                                    category: entry.key,
+                                    transactions: transactions,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }
@@ -224,6 +244,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
         return Icons.work;
       case 'Investments':
         return Icons.trending_up;
+      case 'Other':
+        return Icons.more_sharp;
       // Add more categories as needed
       default:
         return Icons.more_horiz;
